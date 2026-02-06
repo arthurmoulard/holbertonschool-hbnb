@@ -1,4 +1,5 @@
 # holbertonschool-hbnb
+
 Clone the Airbnb application with peers.
 
 Part 1: Technical Documentation
