@@ -1,6 +1,7 @@
-HBnB Technical Architecture Document
+**HBnB Technical Architecture Document**
 
-1. Introduction
+**1. Introduction**
+
 HBnB Evolution is a simplified AirBnB-like platform that enables user management, place listing, review submission, and amenity management. The system follows a three-layer architecture composed of the Presentation, Business Logic, and Persistence layers.
 This documentation includes:
 A high-level package diagram illustrating the layered architecture and facade pattern.
@@ -14,7 +15,8 @@ Sequence diagrams showing interactions for key API operations.
 
 The goal of this document is to clearly define the system structure, business rules, and data flow to ensure a consistent and maintainable implementation.
 
-2. Architectural Foundations
+**2. Architectural Foundations**
+
 The HBnB system follows a layered architecture pattern composed of the following layers:
 Presentation Layer (API) – Handles HTTP requests and responses.
 
@@ -37,7 +39,7 @@ Testability
 
 
 
-2. High-Level Package Diagram
+**2. High-Level Package Diagram**
 
 HBnB Package Diagram Analysis
 Overview
@@ -78,7 +80,7 @@ This high-level architecture serves as the blueprint for organizing code structu
 <img width="322" height="630" alt="image" src="https://github.com/user-attachments/assets/06cd2b1c-2e23-4c90-8371-bf33aa9be595" />
 
 
-3. Detailed Class Diagram For Business Logic Layer
+**3. Detailed Class Diagram For Business Logic Layer**
 
 Overview
 This diagram details the core domain entities of the HBnB Business Logic Layer, showing attributes, methods, and relationships that implement business rules between the Presentation and Persistence layers.
@@ -108,7 +110,7 @@ Translates business logic into database schemas, API contracts, and validation r
 <img width="575" height="578" alt="image" src="https://github.com/user-attachments/assets/c9578065-35a2-4e55-a132-587949fb84f4" />
 
 
-4. Sequence Diagrams
+**4. Sequence Diagrams**
 
 1. User Registration - POST /users
 
@@ -147,6 +149,7 @@ In this sequence diagram, a user submits a review for a property they've stayed 
 In this sequence diagram, a user searches for available places. The user sends a request with optional search filters to the API, which asks the business logic layer to retrieve the matching data. The business logic queries the database for places that meet the criteria. Once the data is found, it's returned from the database as a list of places. The business logic transforms this into a presentation-friendly format and sends it back through the API to the user with a 200 OK status.
 
 
-Conclusion
+**Conclusion:**
+
 The HBnB architecture, organized into three layers (Presentation, Business Logic, Persistence) with a Facade pattern, ensures a clear separation of responsibilities. The package, class, and sequence diagrams illustrate the key entities and data flows, ensuring maintainability, scalability, and testability. This document serves as a solid reference for the development and future evolution of the platform.
 
