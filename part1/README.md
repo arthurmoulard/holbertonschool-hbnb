@@ -111,6 +111,9 @@ Good luck, and remember to leverage the provided resources and your own research
 
 
 0. High-Level Package Diagram
+
+   <img width="592" height="839" alt="image" src="https://github.com/user-attachments/assets/2195d607-5b3e-4d38-99e3-9839d49afab2" />
+
 Objective
 
 Create a high-level package diagram that illustrates the three-layer architecture of the HBnB application and the communication between these layers via the facade pattern. This diagram will provide a conceptual overview of how the different components of the application are organized and how they interact with each other.
