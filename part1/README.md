@@ -288,6 +288,15 @@ Repo:
 
 
 2. Sequence Diagrams for API Calls
+
+<img width="769" height="625" alt="image" src="https://github.com/user-attachments/assets/9e93307b-e133-4cb5-8fb6-bee31781e03d" />
+
+<img width="684" height="566" alt="image" src="https://github.com/user-attachments/assets/8b787687-0896-47f0-bcd0-74594f58447d" />
+
+<img width="762" height="611" alt="image" src="https://github.com/user-attachments/assets/243580b2-7393-4722-9923-1294b599c41b" />
+
+<img width="868" height="530" alt="image" src="https://github.com/user-attachments/assets/df9b22d9-cd31-4634-be97-267b072be4c2" />
+
 Objective
 
 Develop sequence diagrams for at least four different API calls to illustrate the interaction between the layers (Presentation, Business Logic, Persistence) and the flow of information within the HBnB application. The sequence diagrams will help visualize how different components of the system interact to fulfill specific use cases, showing the step-by-step process of handling API requests.
