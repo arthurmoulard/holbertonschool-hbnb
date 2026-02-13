@@ -209,6 +209,9 @@ Repo:
 
 
 1. Detailed Class Diagram for Business Logic Layer
+
+<img width="821" height="803" alt="image" src="https://github.com/user-attachments/assets/37ef8e4f-d583-4896-9436-de8a9b21cd1e" />
+
 Objective
 
 Design a detailed class diagram for the Business Logic layer of the HBnB application. This diagram will depict the entities within this layer, their attributes, methods, and the relationships between them. The primary goal is to provide a clear and detailed visual representation of the core business logic, focusing on the key entities: User, Place, Review, and Amenity.
