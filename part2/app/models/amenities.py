@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from .BaseModel import BaseModel
+from app.models.BaseModel import BaseModel
 
 
 class Amenity(BaseModel):
@@ -23,8 +23,3 @@ class Amenity(BaseModel):
 
     def add_place(self, place):
         self.places.append(place)
-
-
-list_equipement = ["Wi-Fi", "Parking"]
-
-amenities = [Amenity(name) for name in list_equipement]

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from .BaseModel import BaseModel
+from app.models.BaseModel import BaseModel
 
 
 class Review(BaseModel):

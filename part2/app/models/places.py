@@ -1,74 +1,71 @@
 #!/usr/bin/python3
-import BaseModel
-import uuid
-from datetime import datetime
+from app.models.BaseModel import BaseModel
 
 
 class Place(BaseModel):
-    def __init__(self, id, title, description, price, latitude, longitude, owner):
-        self.id = str(uuid.uuid4())
+    def __init__(self, title, description, price, latitude, longitude, owner):
+        super().__init__()
         self.title = title
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
         self.owner = owner
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
         self.reviews = []
         self.amenities = []
 
     @property
     def title(self):
-        return self.title
-    
+        return self._title
+
     @title.setter
     def title(self, char):
-        if not char or isinstance(char, str):
+        if not char or not isinstance(char, str):
             raise TypeError("Le titre est obligatoire et doit etre une chaine de caractères.")
         if len(char) > 100:
             raise ValueError("Le titre ne peut pas dépasser 100 caractères.")
-    
+        self._title = char
+
     @property
     def price(self):
-        return self.price
-    
+        return self._price
+
     @price.setter
     def price(self, value):
         if not isinstance(value, (int, float)) or value <= 0:
             raise ValueError("Le prix doit être un nombre positif.")
         self._price = float(value)
-    
+        self._price = self.price
+
     @property
     def longitude(self):
-        return self.longitude
-    
+        return self._longitude
+
     @longitude.setter
     def longitude(self, value):
         if not isinstance(value, (int, float)) or not (-180.0 <= value <= 180.0):
             raise ValueError("La longitude doit être comprise entre -180.0 et 180.0.")
         self._longitude = float(value)
-    
+
     @property
     def latitude(self):
         return self.latitude
-    
+
     @latitude.setter
     def latitude(self, value):
         if not isinstance(value, (int, float))or not (-90.0 <= value <= 90.0):
             raise ValueError("La latitude doit être comprise entre -90.0 et 90.0.")
         self._latitude = float(value)
-    
+
     @property
     def owner(self):
         return self.owner
-    
+
     @owner.setter
     def owner(self, user):
         if not user or not hasattr(user, 'id'):
             raise ValueError("Le propriétaire doit être une instance valide de User.")
         self._owner = user
-
 
     def add_review(self, review):
         if not hasattr(review, 'id'):
@@ -83,8 +80,5 @@ class Place(BaseModel):
             self.amenities.append(amenity)
             self.save()
 
-    def save(self):
-        self.update_at = datetime.now()
-
-    def repr(self):
+    def __repr__(self):
         return f"<Place id={self.id} title='{self.title} owner={self.owner.id}>"
