@@ -1,4 +1,4 @@
-from app.models.basemodel import BaseModel as BaseModel
+from app.models.BaseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
 
 

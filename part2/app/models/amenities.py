@@ -1,1 +1,30 @@
-1
+#!/usr/bin/python3
+from .BaseModel import BaseModel
+
+
+class Amenity(BaseModel):
+    """id (String): Unique identifier for each amenity.
+    name (String): The name of the amenity (e.g., "Wi-Fi", "Parking").
+    Required, maximum length of 50 characters.
+    created_at (DateTime): Timestamp when the amenity is created.
+    updated_at (DateTime): Timestamp when the amenity is last updated"""
+
+    def __init__(self, name):
+        super().__init__()
+
+        if not isinstance(name, str):
+            raise TypeError("name must be a string")
+
+        if len(name) > 50:
+            raise ValueError("name must be at most 50 characters")
+
+        self.name = name
+        self.places = []
+
+    def add_place(self, place):
+        self.places.append(place)
+
+
+list_equipement = ["Wi-Fi", "Parking"]
+
+amenities = [Amenity(name) for name in list_equipement]
