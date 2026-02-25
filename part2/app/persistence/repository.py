@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Repository(ABC):
     @abstractmethod
     def add(self, obj):
@@ -50,4 +51,3 @@ class InMemoryRepository(Repository):
 
     def get_by_attribute(self, attr_name, attr_value):
         return next((obj for obj in self._storage.values() if getattr(obj, attr_name) == attr_value), None)
-    
