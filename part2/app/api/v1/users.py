@@ -39,7 +39,8 @@ class UserList(Resource):
         return [{
                 'id': a.id,
                 'first_name': a.first_name,
-                'last_name': a.last_name
+                'last_name': a.last_name,
+                'email': a.email
                 } for a in users], 200
 
 
