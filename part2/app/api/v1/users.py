@@ -31,6 +31,17 @@ class UserList(Resource):
         return {'id': new_user.id, 'first_name': new_user.first_name,
                 'last_name': new_user.last_name, 'email': new_user.email}, 201
 
+    @api.response(200, 'List of users retrieved successfully')
+    def get(self):
+        """Retrieve a list of all users"""
+        users = facade.get_all_user()
+
+        return [{
+                'id': a.id,
+                'first_name': a.first_name,
+                'last_name': a.last_name
+                } for a in users], 200
+
 
 @api.route('/<user_id>')
 class UserResource(Resource):
@@ -39,8 +50,7 @@ class UserResource(Resource):
     def get(self, user_id):
         """Get user details by ID"""
         user = facade.get_user(user_id)
-        if not user:
-            api.abort(404, "User not found")
+
         return {
                 'id': user.id,
                 'first_name': user.first_name,
