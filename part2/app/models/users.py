@@ -46,7 +46,7 @@ class User(BaseModel):
             ValueError: If the first name is empty or None.
         """
         if not value:
-            raise ValueError
+            raise ValueError("first_name cannot be empty")
         self.__first_name = value
 
     @property
@@ -65,7 +65,7 @@ class User(BaseModel):
             ValueError: If the last name is empty or None.
         """
         if not value:
-            raise ValueError
+            raise ValueError("last name cannot be empty")
         self.__last_name = value
 
     @property
@@ -84,7 +84,7 @@ class User(BaseModel):
             ValueError: If the email is empty or has invalid format.
         """
         if not value:
-            raise ValueError
+            raise ValueError("email cannot be empty")
 
         try:
             valid = validate_email(value, check_deliverability=False)
