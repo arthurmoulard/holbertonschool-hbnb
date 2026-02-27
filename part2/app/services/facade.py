@@ -77,7 +77,23 @@ class HBnBFacade:
         return self.place_repo.get_all()
 
     def update_place(self, place_id, place_data):
-        return self.place_repo.update(place_id, place_data)
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+
+        # On met à jour seulement les champs envoyés
+        if 'title' in place_data:
+            place.title = place_data['title']
+        if 'description' in place_data:
+            place.description = place_data['description']
+        if 'price' in place_data:
+            place.price = place_data['price']
+        if 'latitude' in place_data:
+            place.latitude = place_data['latitude']
+        if 'longitude' in place_data:
+            place.longitude = place_data['longitude']
+
+        return place
 
     def create_review(self, review_data):
         user = self.user_repo.get(review_data.get('user_id'))
@@ -92,7 +108,12 @@ class HBnBFacade:
         if rating is None or not (1 <= rating <= 5):
             raise ValueError("Rating must be between 1 and 5")
 
-        review = Review(**review_data)
+        review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            place=place,
+            user=user
+        )
         self.review_repo.add(review)
         return review
 

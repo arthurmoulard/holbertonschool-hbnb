@@ -25,8 +25,8 @@ class ReviewList(Resource):
                 'id': review.id,
                 'text': review.text,
                 'rating': review.rating,
-                'user_id': review.user_id,
-                'place_id': review.place_id
+                'user_id': review.user.id,
+                'place_id': review.place.id
             }, 201
         except ValueError as e:
             return {'error': str(e)}, 400
@@ -39,8 +39,8 @@ class ReviewList(Resource):
             'id': r.id,
             'text': r.text,
             'rating': r.rating,
-            'user_id': r.user_id,
-            'place_id': r.place_id
+            'user_id': r.user.id,
+            'place_id': r.place.id
         } for r in reviews], 200
 
 
@@ -57,8 +57,8 @@ class ReviewResource(Resource):
             'id': review.id,
             'text': review.text,
             'rating': review.rating,
-            'user_id': review.user_id,
-            'place_id': review.place_id
+            'user_id': review.user.id,
+            'place_id': review.place.id
         }, 200
 
     @api.expect(review_model)
@@ -69,16 +69,11 @@ class ReviewResource(Resource):
         """Update a review's information"""
         review = facade.get_review(review_id)
         if not review:
-            return {'error': 'Review not found'}, 404
+            return {'error': 'Place not found'}, 404
+
         try:
-            updated = facade.update_review(review_id, api.payload)
-            return {
-                'id': updated.id,
-                'text': updated.text,
-                'rating': updated.rating,
-                'user_id': updated.user_id,
-                'place_id': updated.place_id
-            }, 200
+            facade.update_review(review_id, api.payload)
+            return {'message': 'Review deleted successfully'}, 200
         except ValueError as e:
             return {'error': str(e)}, 400
 

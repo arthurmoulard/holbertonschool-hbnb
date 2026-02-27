@@ -114,47 +114,8 @@ class PlaceResource(Resource):
             return {'error': 'Place not found'}, 404
 
         try:
-            updated = facade.update_place(place_id, api.payload)
-            return {
-                'id': updated.id,
-                'title': updated.title,
-                'description': updated.description,
-                'price': updated.price,
-                'latitude': updated.latitude,
-                'longitude': updated.longitude
-            }, 200
-        except ValueError as e:
-            return {'error': str(e)}, 400
-
-    def put(self, place_id):
-        """Update a place's information"""
-        place_data = api.payload
-
-        try:
-            updated_place = facade.update_place(place_id, place_data)
-
-            if not updated_place:
-                api.abort(404, "Place not found")
-
-            return {
-                'id': updated_place.id,
-                'title': updated_place.title,
-                'description': updated_place.description,
-                'price': updated_place.price,
-                'latitude': updated_place.latitude,
-                'longitude': updated_place.longitude,
-                'owner': {
-                    'id': updated_place.owner.id,
-                    'first_name': updated_place.owner.first_name,
-                    'last_name': updated_place.owner.last_name,
-                    'email': updated_place.owner.email
-                },
-                'amenities': [
-                    {'id': a.id, 'name': a.name}
-                    for a in updated_place.amenities
-                ]
-            }, 200
-
+            facade.update_place(place_id, api.payload)
+            return {'message': 'Place updated successfully'}, 200
         except ValueError as e:
             return {'error': str(e)}, 400
 
