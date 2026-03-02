@@ -1,8 +1,8 @@
 from app.persistence.repository import InMemoryRepository
 from app.models.users import User
+from app.models.places import Place
 from app.models.amenities import Amenity
 from app.models.reviews import Review
-# from app.models.amenities import Amenity
 
 
 class HBnBFacade:
@@ -26,18 +26,6 @@ class HBnBFacade:
     def get_user_by_email(self, email):
         return self.user_repo.get_by_attribute('email', email)
 
-    def update_user(self, user_id, user_data):
-        user = self.get_user(user_id)
-        if not user:
-            return None
-        for key, value in user_data.items():
-            setattr(user, key, value)
-        return user
-
-    # Placeholder method for fetching a place by ID
-    def get_place(self, place_id):
-        return self.place_repo.get(place_id)
-
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
         self.amenity_repo.add(amenity)
@@ -57,69 +45,106 @@ class HBnBFacade:
             setattr(amenity, key, value)
         return amenity
 
-    def create_review(self, review_data):
-        text = review_data.get("text")
-        rating = review_data.get("rating")
-        user_id = review_data.get("user_id")
-        place_id = review_data.get("place_id")
+    def create_place(self, place_data):
 
-        if not text or not user_id or not place_id:
-            raise ValueError("Missing required fields")
+        price = place_data.get("price", 0)
+        if price < 0:
+            raise ValueError("Price must be positive")
 
-        if rating is None or rating < 1 or rating > 5:
-            raise ValueError("Rating must be between 1 and 5")
+        latitude = place_data.get("latitude")
+        if latitude is not None and not -90 <= latitude <= 90:
+            raise ValueError("Latitude must be between -90 and 90")
 
-        user = self.get_user(user_id)
-        place = self.get_place(place_id)
+        longitude = place_data.get("longitude")
+        if longitude is not None and not -180 <= longitude <= 180:
+            raise ValueError("Longitude must be between -180 and 180")
+
+        owner_id = place_data.pop("owner_id")
+        user = self.user_repo.get(owner_id)
 
         if not user:
-            raise ValueError("User not found")
+            raise ValueError("Owner not found")
 
+        place = Place(owner=user, **place_data)
+
+        self.place_repo.add(place)
+        return place
+
+    def get_place(self, place_id):
+        return self.place_repo.get(place_id)
+
+    def get_all_places(self):
+        return self.place_repo.get_all()
+
+    def update_place(self, place_id, place_data):
+        place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
 
-        review = Review(text, rating, user_id, place_id)
+        # On met à jour seulement les champs envoyés
+        if 'title' in place_data:
+            place.title = place_data['title']
+        if 'description' in place_data:
+            place.description = place_data['description']
+        if 'price' in place_data:
+            place.price = place_data['price']
+        if 'latitude' in place_data:
+            place.latitude = place_data['latitude']
+        if 'longitude' in place_data:
+            place.longitude = place_data['longitude']
 
-        self.storage.save(review)
-        place.reviews.append(review)
+        return place
 
+    def create_review(self, review_data):
+        user = self.user_repo.get(review_data.get('user_id'))
+        if not user:
+            raise ValueError("User not found")
+
+        place = self.place_repo.get(review_data.get('place_id'))
+        if not place:
+            raise ValueError("Place not found")
+
+        rating = review_data.get('rating')
+        if rating is None or not (1 <= rating <= 5):
+            raise ValueError("Rating must be between 1 and 5")
+
+        review = Review(
+            text=review_data['text'],
+            rating=review_data['rating'],
+            place=place,
+            user=user
+        )
+        self.review_repo.add(review)
         return review
 
     def get_review(self, review_id):
-        return self.storage.get(Review, review_id)
+        return self.review_repo.get(review_id)
 
     def get_all_reviews(self):
-        return self.storage.all(Review)
+        return self.review_repo.get_all()
 
     def get_reviews_by_place(self, place_id):
-        return [r for r in self.review_repo.get_all()
-                if r.place_id == place_id]
+        place = self.place_repo.get(place_id)
+        if not place:
+            raise ValueError("Place not found")
+        return \
+            [r for r in self.review_repo.get_all() if r.place_id == place_id]
 
     def update_review(self, review_id, review_data):
-        review = self.get_review(review_id)
+        review = self.review_repo.get(review_id)
         if not review:
-            return None
+            raise ValueError("Review not found")
 
-        if "text" in review_data:
-            review.text = review_data["text"]
-
-        if "rating" in review_data:
-            rating = review_data["rating"]
-            if rating < 1 or rating > 5:
+        if 'rating' in review_data:
+            rating = review_data['rating']
+            if not (1 <= rating <= 5):
                 raise ValueError("Rating must be between 1 and 5")
-            review.rating = rating
 
-        self.storage.save(review)
-        return review
+        self.review_repo.update(review_id, review_data)
+        return self.review_repo.get(review_id)
 
     def delete_review(self, review_id):
-        review = self.get_review(review_id)
+        review = self.review_repo.get(review_id)
         if not review:
-            return None
-
-        place = self.get_place(review.place_id)
-        if place and review in place.reviews:
-            place.reviews.remove(review)
-
-        self.storage.delete(review)
-        return True
+            raise ValueError("Review not found")
+        self.review_repo.delete(review_id)

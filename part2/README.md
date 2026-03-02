@@ -1,161 +1,135 @@
-# HBnB - Application de Location de Logements
+# Hbnb Part 2
 
-HBnB est une application web RESTful inspirée d'AirBnB, développée avec Python et Flask. Elle permet de gérer des utilisateurs, des logements, des équipements et des avis via une API claire et modulaire.
+## Purpose of directories and files.
 
----
+This way we have a well-organized, modular project structure with clear separation of concerns across the **Presentation**, **Business Logic**, and **Persistence layers**. The Flask application will be functional, with an in-memory repository and Facade pattern in place, ready for future integration of API endpoints and a database-backed persistence layer.
 
-## Structure du Projet
+Each directories and files have is own instructions and caracteristics, make a piece of a puzzle that merge together, allows us to correctly and functionnaly run the Hbnb server project.
 
+## Include instructions on how to install dependencies and run the application.
+
+This command install an virtual environnement
+```Bash
+python3 -m venv env
 ```
-hbnb/
-├── app/
-│   ├── __init__.py
-│   ├── api/
-│   │   ├── __init__.py
-│   │   └── v1/
-│   │       ├── __init__.py
-│   │       ├── users.py
-│   │       ├── places.py
-│   │       ├── reviews.py
-│   │       └── amenities.py
-│   ├── models/
-│   │   ├── __init__.py
-│   │   ├── user.py
-│   │   ├── place.py
-│   │   ├── review.py
-│   │   └── amenity.py
-│   ├── services/
-│   │   ├── __init__.py
-│   │   └── facade.py
-│   └── persistence/
-│       ├── __init__.py
-│       └── repository.py
-├── run.py
-├── config.py
-├── requirements.txt
-└── README.md
+And for activacte this we used this command
+```Bash
+source env/bin/activate(.fish)
 ```
-
----
-
-## Description des Répertoires et Fichiers
-
-### Racine du projet
-
-| Fichier / Dossier | Description |
-|---|---|
-| `run.py` | Point d'entrée de l'application. Lance le serveur Flask. |
-| `config.py` | Contient les configurations de l'application (mode debug, clés secrètes, etc.). |
-| `requirements.txt` | Liste toutes les dépendances Python nécessaires au projet. |
-| `README.md` | Documentation générale du projet. |
-
-### `app/`
-Cœur de l'application, divisé en sous-modules selon les couches de l'architecture.
-
-### `app/api/v1/`
-**Couche Présentation** — Contient les endpoints RESTful de l'API.
-
-| Fichier | Description |
-|---|---|
-| `users.py` | Endpoints pour la gestion des utilisateurs (création, lecture, mise à jour). |
-| `places.py` | Endpoints pour la gestion des logements. |
-| `reviews.py` | Endpoints pour la gestion des avis laissés sur les logements. |
-| `amenities.py` | Endpoints pour la gestion des équipements disponibles. |
-
-### `app/models/`
-**Couche Logique Métier** — Contient les classes représentant les entités de l'application.
-
-| Fichier | Description |
-|---|---|
-| `user.py` | Modèle utilisateur (nom, email, mot de passe, etc.). |
-| `place.py` | Modèle logement (titre, description, prix, localisation, etc.). |
-| `review.py` | Modèle avis (texte, note, lien avec utilisateur et logement). |
-| `amenity.py` | Modèle équipement (Wi-Fi, piscine, parking, etc.). |
-
-### `app/services/`
-**Couche Service / Façade** — Fait le lien entre la couche API et la logique métier.
-
-| Fichier | Description |
-|---|---|
-| `facade.py` | Implémente le patron de conception Façade. Centralise les appels entre les couches pour simplifier les interactions. |
-
-### `app/persistence/`
-**Couche Persistance** — Gère le stockage des données.
-
-| Fichier | Description |
-|---|---|
-| `repository.py` | Repository en mémoire (stockage via dictionnaire Python). Sera remplacé par une base SQL (SQLAlchemy) en Partie 3. |
-
----
-
-## Prérequis
-
-- Python **3.8** ou supérieur
-- pip
-
----
-
-## Installation
-
-### 1. Cloner le dépôt
-
-```bash
-git clone https://github.com/ton-utilisateur/hbnb.git
-cd hbnb
-```
-
-### 2. Créer un environnement virtuel
-
-```bash
-python3 -m venv venv
-source venv/bin/activate        # Linux / macOS
-venv\Scripts\activate           # Windows
-```
-
-### 3. Installer les dépendances
-
-```bash
+After activate env we install all package of my list of package
+```Bash
 pip install -r requirements.txt
 ```
+The application run the run.py files who is the entry point.
+```Bash
+python3 run.py
+```
+You should see the Flask application running, although no routes are functional yet. This confirms that the project structure and basic setup are correct and ready for further development.
+
+
+
+## Document the Implementation
+
+
+Update the README.md file to include information about the Business Logic layer, describing the entities and their responsibilities, include examples of how the classes and methods can be used :
+
+The Business Logic layer contains the core entities of the HBnB application.
+It defines the application's data models and enforces validation rules and relationships between objects.
+
+This layer is responsible for:
+
+- Managing application entities
+- Validating data
+- Defining relationships between objects
+- Providing reusable business behaviors
+
+All business models inherit from BaseModel.
+
+BaseModel is the parent class for all entities.
+
+#### Responsibilities
+Generate a unique identifier (id)
+Store creation and update timestamps
+Provide shared behavior for all models
+
+#### Relationships
+- Parent class of all entities (`User`, `Place`, `Review`, `Amenity`).
 
 ---
 
-## Lancer l'application
+### User
 
-```bash
-python run.py
-```
+#### Responsibility
+Represents a user of the HBnB platform. A user can own places and write reviews.
 
-L'application sera accessible à l'adresse : [http://127.0.0.1:5000](http://127.0.0.1:5000)
+#### Main Attributes
+- `id`
+- `first_name`
+- `last_name`
+- `email`
 
-La documentation interactive de l'API (Swagger) est disponible à : [http://127.0.0.1:5000/api/v1/](http://127.0.0.1:5000/api/v1/)
-
----
-
-## Tester l'API
-
-Tu peux tester les endpoints avec **Postman** ou **cURL**.
-
-Exemple avec cURL pour récupérer la liste des utilisateurs :
-
-```bash
-curl -X GET http://127.0.0.1:5000/api/v1/users/
-```
+#### Relationships
+- A User can own multiple **Places**.
+- A User can write multiple **Reviews**.
 
 ---
 
-## Architecture
+### Place
 
-L'application suit une architecture **3 couches** :
+#### Responsibility
+Represents a property available on the platform. It stores location,
+price information, and manages associated reviews and amenities.
 
-```
-Présentation (API)  →  Façade (Services)  →  Logique Métier (Models)  →  Persistance
-```
+#### Main Attributes
+- `title`
+- `description`
+- `price`
+- `latitude`
+- `longitude`
+- `owner`
+- `reviews`
+- `amenities`
 
-Cette séparation garantit un code modulaire, maintenable et facilement extensible.
+#### Relationships
+- Belongs to one **User** (owner).
+- Can contain multiple **Reviews**.
+- Can include multiple **Amenities**.
 
 ---
 
-## Auteur
+### Review
 
-Projet réalisé dans le cadre du cursus **Holberton School**.
+#### Responsibility
+Represents feedback written by a user about a place.
+
+#### Main Attributes
+- `text`
+- `rating`
+- `user`
+- `place`
+
+#### Relationships
+- Linked to one **User**.
+- Linked to one **Place**.
+
+---
+
+### Amenity
+
+#### Responsibility
+Represents a feature or service available in a place (WiFi, Pool, etc.).
+
+#### Main Attributes
+- `name`
+
+#### Relationships
+- Can be associated with multiple **Places**.
+- A Place can contain multiple Amenities.
+
+#### Example
+
+```python
+from app.models.base_model import BaseModel
+
+obj = BaseModel()
+print(obj.id)
