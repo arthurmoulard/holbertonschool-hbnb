@@ -11,15 +11,17 @@ class Amenity(BaseModel):
 
     def __init__(self, name):
         super().__init__()
+        self.name = name
+        self.places = []
+
+        if not name:
+            raise ValueError("name can't be empty")
 
         if not isinstance(name, str):
             raise TypeError("name must be a string")
 
         if len(name) > 50:
             raise ValueError("name must be at most 50 characters")
-
-        self.name = name
-        self.places = []
 
     def add_place(self, place):
         self.places.append(place)
