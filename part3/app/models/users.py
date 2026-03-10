@@ -1,6 +1,8 @@
 from app.models.BaseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from flask_bcrypt import Bcrypt
+import bcrypt
+import re
+
 
 class User(BaseModel):
     """Model representing a user in the system.
@@ -49,6 +51,8 @@ class User(BaseModel):
         """
         if not value:
             raise ValueError("first_name cannot be empty")
+        if len(value) > 50:
+            raise ValueError("First name must be at most 50 characters")
         self.__first_name = value
 
     @property
@@ -68,6 +72,8 @@ class User(BaseModel):
         """
         if not value:
             raise ValueError("last name cannot be empty")
+        if len(value) > 50:
+            raise ValueError("Last name must be at most 50 characters")
         self.__last_name = value
 
     @property
@@ -110,13 +116,28 @@ class User(BaseModel):
         """
         self.places.append(place)
 
+    @property
+    def password(self):
+        return self.__password
 
-    def hash_password(self, password):
-        """Hashes the password before storing it."""
-        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
-
+    @password.setter
+    def password(self, value):
+        if not value:
+            raise ValueError("Password cannot be empty")
+        if len(value) < 8:
+            raise ValueError("password must be at least 8 characters")
+        if len(value) > 50:
+            raise ValueError("password must be at most 50 characters")
+        if not re.search(r'[A-Z]', value):
+            raise ValueError("Password must contain at least one uppercase letter")
+        if not re.search(r'[0-9]', value):
+            raise ValueError("Password must contain at least one number")
+        if not re.search(r'[!@#$%^&*(),.?":{}|<>]', value):
+            raise ValueError("Password must contain at least one special character")
+        # gensalt() generates a random cryptographic salt used to make each
+        # hash unique, even if two users have the same password.
+        self.__password = bcrypt.hashpw(value.encode('utf-8'),
+                                        bcrypt.gensalt())
 
     def verify_password(self, password):
-        """Verifies if the provided password matches the hashed password."""
-        return bcrypt.check_password_hash(self.password, password)
-    
+        return bcrypt.checkpw(password.encode('utf-8'), self.__password)

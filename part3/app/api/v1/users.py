@@ -19,7 +19,7 @@ user_model = api.model('User', {
 
 @api.route('/')
 class UserList(Resource):
-    @api.expect(user_model, validate=True)
+    @api.expect(user_model, validate=False)
     @api.response(201, 'User successfully created')
     @api.response(409, 'Email already registered')
     @api.response(400, 'Invalid input data')
