@@ -5,8 +5,10 @@ from app.api.v1.places import api as places_ns
 from app.api.v1.amenities import api as amenities_ns
 from app.api.v1.reviews import api as reviews_ns
 from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy
 
 bcrypt = Bcrypt()
+db = SQLAlchemy()
 
 def create_app(config_class="config.DevelopmentConfig"):
     app = Flask(__name__)
