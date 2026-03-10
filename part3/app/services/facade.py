@@ -1,4 +1,4 @@
-from app.persistence.repository import InMemoryRepository
+from app.persistence.SQLAlchemy_Repository import SQLAlchemyRepository
 from app.models.users import User
 from app.models.places import Place
 from app.models.amenities import Amenity
@@ -7,12 +7,12 @@ from app.models.reviews import Review
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = SQLAlchemyRepository(User)
+        self.place_repo = SQLAlchemyRepository(Place)
+        self.review_repo = SQLAlchemyRepository(Review)
+        self.amenity_repo = SQLAlchemyRepository(Amenity)
 
-# ---------------------User-------------------
+# --------------------- User ---------------------
 
     def create_user(self, user_data):
         user = User(**user_data)
@@ -35,7 +35,7 @@ class HBnBFacade:
         self.user_repo.update(user_id, user_data)
         return self.get_user(user_id)
 
-# ---------------------Amenity-------------------
+# --------------------- Amenity ---------------------
 
     def create_amenity(self, amenity_data):
         amenity = Amenity(**amenity_data)
@@ -57,7 +57,7 @@ class HBnBFacade:
             setattr(amenity, key, value)
         return amenity
 
-# ---------------------Place-------------------
+# --------------------- Place ---------------------
 
     def create_place(self, place_data):
         price = place_data.get("price", 0)
@@ -108,7 +108,7 @@ class HBnBFacade:
 
         return place
 
-# ---------------------Review-------------------
+# --------------------- Review ---------------------
 
     def create_review(self, review_data):
         user = self.user_repo.get(review_data.get('user_id'))

@@ -37,7 +37,8 @@ class UserList(Resource):
                 'id': new_user.id,
                 'first_name': new_user.first_name,
                 'last_name': new_user.last_name,
-                'email': new_user.email
+                'email': new_user.email,
+                'password': new_user.password
             }, 201
 
         except ValueError as e:

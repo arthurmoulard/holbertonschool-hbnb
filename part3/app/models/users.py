@@ -1,6 +1,6 @@
 from app.models.BaseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-
+from flask_bcrypt import Bcrypt
 
 class User(BaseModel):
     """Model representing a user in the system.
@@ -107,3 +107,12 @@ class User(BaseModel):
             place: A Place object to associate with this user.
         """
         self.places.append(place)
+
+    def hash_password(self, password):
+        """Hashes the password before storing it."""
+        self.password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+    def verify_password(self, password):
+        """Verifies if the provided password matches the hashed password."""
+        return bcrypt.check_password_hash(self.password, password)
+    
