@@ -5,3 +5,4 @@ mysqlclient
 python-dotenv
 email_validator
 bcrypt
+email_validator
