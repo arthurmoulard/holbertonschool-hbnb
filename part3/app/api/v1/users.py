@@ -1,6 +1,5 @@
-from flask_restx import Namespace, Resource, fields, request
+from flask_restx import Namespace, Resource, fields
 from app.services import facade
-from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 
 
 api = Namespace('users', description='User operations')
@@ -96,49 +95,4 @@ class UserResource(Resource):
                 'first_name': updated_user.first_name,
                 'last_name': updated_user.last_name,
                 'email': updated_user.email
-                }, 200
-
-# ------------------------admin------------------------
-
-
-@api.route('/users/')
-class AdminUserCreate(Resource):
-    @jwt_required()
-    def post(self):
-        # Récupérer l'utilisateur connecté
-        current_user = get_jwt_identity()
-
-        if not current_user.get('is_admin'):
-            return {'error': 'Admin privileges required'}, 403
-
-        # Récupère les données envoyées
-        user_data = request.json
-        email = user_data.get('email')
-
-        # Check if email is already in use
-        if facade.get_user_by_email(email):
-            return {'error': 'Email already registered'}, 400
-
-        # Logic to create a new user
-        pass
-
-
-@api.route('/users/<user_id>')
-class AdminUserModify(Resource):
-    @jwt_required()
-    def put(self, user_id):
-        current_user = get_jwt()
-        if not current_user.get('is_admin'):
-            return {'error': 'Admin privileges required'}, 403
-
-        data = request.json
-        email = data.get('email')
-
-        # Ensure email uniqueness
-        if email:
-            existing_user = facade.get_user_by_email(email)
-            if existing_user and existing_user.id != user_id:
-                return {'error': 'Email already in use'}, 400
-
-        # Logic to update user details
-        pass
+                }, 200  # ------------------------admin------------------------
