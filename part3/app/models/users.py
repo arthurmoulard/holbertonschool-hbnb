@@ -1,6 +1,7 @@
 from app.models.BaseModel import BaseModel
 from email_validator import validate_email, EmailNotValidError
-from flask_bcrypt import Bcrypt
+import bcrypt
+
 
 class User(BaseModel):
     """Model representing a user in the system.
