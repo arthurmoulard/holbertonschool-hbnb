@@ -1,21 +1,23 @@
-from app.persistence.SQLAlchemy_Repository import SQLAlchemyRepository
 from app.models.users import User
 from app.models.places import Place
 from app.models.amenities import Amenity
 from app.models.reviews import Review
+from app.persistence.repository import InMemoryRepository
 
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = SQLAlchemyRepository(User)
-        self.place_repo = SQLAlchemyRepository(Place)
-        self.review_repo = SQLAlchemyRepository(Review)
-        self.amenity_repo = SQLAlchemyRepository(Amenity)
+        self.user_repo = InMemoryRepository()
+        self.place_repo = InMemoryRepository()
+        self.review_repo = InMemoryRepository()
+        self.amenity_repo = InMemoryRepository()
 
 # --------------------- User ---------------------
 
     def create_user(self, user_data):
         user = User(**user_data)
+        # Hasher le password après création
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
