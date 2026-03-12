@@ -1,5 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 from app.services import facade
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 api = Namespace('amenities', description='Amenity operations')
@@ -15,13 +16,20 @@ class AmenityList(Resource):
     @api.expect(amenity_model)
     @api.response(201, 'Amenity successfully created')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def post(self):
-        """Register a new amenity"""
+        """Register a new amenity -- only admin"""
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+
+        if not current_user.is_admin:
+            return {'error': 'Unauthorized action'}, 403
+        
         amenity_data = api.payload
 
         try:
             new_amenity = facade.create_amenity(amenity_data)
-
         except ValueError as e:
             return {'error': str(e)}, 400
 
@@ -60,9 +68,17 @@ class AmenityResource(Resource):
     @api.response(200, 'Amenity updated successfully')
     @api.response(404, 'Amenity not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def put(self, amenity_id):
-        amenity_data = api.payload
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
 
+        if not current_user.is_admin:
+            return {'error': 'Unauthorized action'}, 403
+        
+        
+        amenity_data = api.payload
         amenity = facade.get_amenity(amenity_id)
         if not amenity:
             return {'error': 'Amenity not found'}, 404

@@ -30,8 +30,17 @@ class UserList(Resource):
     @api.response(201, 'User successfully created')
     @api.response(409, 'Email already registered')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
+    @jwt_required()
     def post(self):
-        """Register a new user"""
+        """Register a new user -- only admin"""
+
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+
+        if not current_user.is_admin:
+            return {'error': 'Unauthorized action'}, 403
+
         user_data = api.payload
 
         # check email uniqueness
@@ -86,31 +95,34 @@ class UserResource(Resource):
     @api.response(200, 'User successfully updated')
     @api.response(404, 'User not found')
     @api.response(400, 'Invalid input data')
+    @api.response(403, 'Unauthorized action')
     @jwt_required()
     def put(self, user_id):
         """Update user details"""
+        current_user_id = get_jwt_identity()
+        current_user = facade.get_user(current_user_id)
+
         user_data = api.payload
-
-        if 'email' in user_data or 'password' in user_data:
-            return {'error': 'You cannot modify email or password.'}, 400
-
-        current_user = get_jwt_identity()
         user = facade.get_user(user_id)
 
         if not user:
             return {'error': 'User not found'}, 404
 
-        if user.id != current_user:
-            return {'error': 'Unauthorized action'}, 403
+        if current_user.is_admin:
+            pass
+        else:
+            if 'email' in user_data or 'password' in user_data:
+                return {'error': 'You cannot modify email or password.'}, 400
+            if user.id != current_user_id:
+                return {'error': 'Unauthorized action'}, 403
 
         updated_user = facade.update_user(user_id, user_data)
-
         if not updated_user:
             return {'error': 'Invalid input data'}, 400
 
         return {
-                'id': updated_user.id,
-                'first_name': updated_user.first_name,
-                'last_name': updated_user.last_name,
-                'email': updated_user.email
-                }, 200
+            'id': updated_user.id,
+            'first_name': updated_user.first_name,
+            'last_name': updated_user.last_name,
+            'email': updated_user.email
+        }, 200
