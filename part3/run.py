@@ -1,3 +1,4 @@
+import os
 from app import create_app
 from app.services import facade
 
@@ -11,7 +12,8 @@ if __name__ == '__main__':
                 'first_name': 'Admin',
                 'last_name': 'HBnB',
                 'email': 'admin@hbnb.io',
-                'password': 'admin1234',
+                'password': os.getenv('ADMIN_PASSWORD', 'admin1234'),
                 'is_admin': True
-                })
-    app.run(debug=True)
+            })
+    app.run(debug=app.config['DEBUG'])
+    
