@@ -1,6 +1,6 @@
 from app import db
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class BaseModel(db.Model):
@@ -14,19 +14,19 @@ class BaseModel(db.Model):
     )
     created_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
         nullable=False
     )
     updated_at = db.Column(
         db.DateTime,
-        default=datetime.utcnow,
-        onupdate=datetime.utcnow,
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False
     )
 
     def save(self):
         """Met à jour updated_at et commit en base."""
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(timezone.utc)
         db.session.commit()
 
     def update(self, data, is_admin=False):
