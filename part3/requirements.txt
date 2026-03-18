@@ -1,6 +1,9 @@
-Flask
-Flask-JWT-Extended
-Flask-SQLAlchemy
-bcrypt
-mysqlclient
-python-dotenv
+flask
+flask-restx
+flask-bcrypt
+flask-jwt-extended
+flask-sqlalchemy
+sqlalchemy
+email-validator
+pymysql
+cryptography

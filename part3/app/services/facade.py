@@ -2,15 +2,18 @@ from app.models.users import User
 from app.models.places import Place
 from app.models.amenities import Amenity
 from app.models.reviews import Review
-from app.persistence.repository import InMemoryRepository
+from app.persistence.user_repository import UserRepository
+from app.persistence.place_repository import PlaceRepository
+from app.persistence.review_repository import ReviewRepository
+from app.persistence.amenity_repository import AmenityRepository
 
 
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = InMemoryRepository()
-        self.place_repo = InMemoryRepository()
-        self.review_repo = InMemoryRepository()
-        self.amenity_repo = InMemoryRepository()
+        self.user_repo = UserRepository()
+        self.place_repo = PlaceRepository()
+        self.review_repo = ReviewRepository()
+        self.amenity_repo = AmenityRepository()
 
     # ── Users ─────────────────────────────────────────────────────────────
 
@@ -19,9 +22,10 @@ class HBnBFacade:
             first_name=user_data['first_name'],
             last_name=user_data['last_name'],
             email=user_data['email'],
-            password=user_data['password'],
+            password='placeholder',
             is_admin=user_data.get('is_admin', False)
         )
+        user.hash_password(user_data['password'])
         self.user_repo.add(user)
         return user
 
@@ -32,7 +36,7 @@ class HBnBFacade:
         return self.user_repo.get_all()
 
     def get_user_by_email(self, email):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_by_email(email)
 
     def update_user(self, user_id, user_data, is_admin=False):
         user = self.user_repo.get(user_id)
@@ -73,9 +77,9 @@ class HBnBFacade:
             title=place_data['title'],
             description=place_data.get('description', ''),
             price=place_data['price'],
-            latitude=place_data['latitude'],
-            longitude=place_data['longitude'],
-            owner=user
+            latitude=place_data.get('latitude'),
+            longitude=place_data.get('longitude'),
+            owner_id=owner_id
         )
         self.place_repo.add(place)
         return place
@@ -108,15 +112,11 @@ class HBnBFacade:
         if not place:
             raise ValueError("Place not found")
 
-        if not isinstance(review_data.get('rating'), int) or \
-                not (1 <= review_data['rating'] <= 5):
-            raise ValueError("Rating must be between 1 and 5")
-
         review = Review(
             text=review_data['text'],
             rating=review_data['rating'],
-            place=place,
-            user=user
+            user_id=review_data['user_id'],
+            place_id=review_data['place_id']
         )
         self.review_repo.add(review)
         return review
@@ -131,8 +131,7 @@ class HBnBFacade:
         place = self.place_repo.get(place_id)
         if not place:
             raise ValueError("Place not found")
-        return [r for r in self.review_repo.get_all()
-                if r.place.id == place_id]
+        return self.review_repo.get_by_place(place_id)
 
     def update_review(self, review_id, review_data):
         review = self.review_repo.get(review_id)
@@ -148,4 +147,3 @@ class HBnBFacade:
     def delete_review(self, review_id):
         if not self.review_repo.delete(review_id):
             raise ValueError("Review not found")
-        
