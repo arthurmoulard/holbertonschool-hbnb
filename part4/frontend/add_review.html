@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Review - HBnB</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="images/icon.png">
+  </head>
+  <body>
+
+    <!-- Header -->
+    <header>
+      <div>
+        <a href="index.html">
+          <img class="logo" src="images/logo.png" alt="HBnB logo">
+        </a>
+        <nav>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="login.html" id="login-link" class="login-button">Login</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main>
+
+      <!-- Nom du lieu récupéré dynamiquement via JS -->
+      <h1 id="place-name">Place name</h1>
+
+      <form id="review-form" class="add-review form">
+        <h2>Add a Review</h2>
+
+        <label for="review">Your Review :</label>
+        <textarea id="review" name="review" rows="5" placeholder="Write your review here..." required></textarea>
+
+        <label for="rating">Rating :</label>
+        <select id="rating" name="rating" required>
+          <option value="">-- Select a rating --</option>
+          <option value="1">1 - Poor</option>
+          <option value="2">2 - Fair</option>
+          <option value="3">3 - Good</option>
+          <option value="4">4 - Very Good</option>
+          <option value="5">5 - Excellent</option>
+        </select>
+
+        <button type="submit">Submit Review</button>
+      </form>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <img src="images/logo.png" alt="HBnB logo">
+      <address>
+        106 Av. Pierre de Coubertin<br>
+        53000 Laval, France
+      </address>
+
+      <hr>
+
+      <p>2026 HBnB, made by A&A&M, All rights reserved.</p>
+    </footer>
+
+    <script src="scripts.js"></script>
+  </body>
+</html>

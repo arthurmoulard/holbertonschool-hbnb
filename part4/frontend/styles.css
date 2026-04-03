@@ -1,0 +1,391 @@
+/* ===========================
+   VARIABLES & RESET
+=========================== */
+:root {
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-primary: #c084a0;
+  --color-primary-light: #f9f0f5;
+  --color-accent: #7c6bb0;
+  --color-accent-light: #f3eefb;
+  --color-text: #4a5568;
+  --color-text-light: #888ea0;
+  --color-border: #e8e0ec;
+  --color-success: #f0f7f0;
+  --color-success-text: #507050;
+  --radius-card: 10px;
+  --margin-card: 20px;
+  --padding-card: 10px;
+  --shadow: 0 2px 8px rgba(180, 150, 190, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* ===========================
+   HEADER
+=========================== */
+header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: 1rem 2rem;
+}
+
+header > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+header .logo {
+  height: 48px;
+  width: auto;
+}
+
+header nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+header nav a {
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+header nav a:hover {
+  color: var(--color-primary);
+}
+
+/* ===========================
+   LOGIN BUTTON
+=========================== */
+.login-button {
+  background-color: var(--color-primary-light);
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-primary);
+  border-radius: 20px;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.login-button:hover {
+  background-color: var(--color-primary);
+  color: #fff !important;
+}
+
+/* ===========================
+   MAIN
+=========================== */
+main {
+  padding: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+footer {
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 2rem;
+  text-align: center;
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+footer img {
+  height: 40px;
+  margin-bottom: 0.8rem;
+}
+
+footer address {
+  font-style: normal;
+  margin: 0.5rem 0;
+  font-size: 0.85rem;
+}
+
+footer hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 1rem auto;
+  max-width: 300px;
+}
+
+/* ===========================
+   FILTRE (index.html)
+=========================== */
+#filter {
+  background-color: var(--color-accent-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+#filter label {
+  font-size: 0.95rem;
+  color: var(--color-accent);
+  font-weight: bold;
+}
+
+#filter select {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  cursor: pointer;
+}
+
+/* ===========================
+   LISTE DES PLACES (index.html)
+=========================== */
+#places-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.place-card {
+  background-color: var(--color-surface);
+  border: 1px solid #ddd;
+  border-radius: var(--radius-card);
+  margin: var(--margin-card);
+  padding: var(--padding-card);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.place-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(180, 150, 190, 0.18);
+}
+
+.place-card h2 {
+  font-size: 1.1rem;
+  color: var(--color-accent);
+}
+
+.place-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+.details-button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  background-color: var(--color-accent-light);
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.details-button:hover {
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* ===========================
+   PLACE DETAILS (place.html)
+=========================== */
+.place-details {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow);
+}
+
+.place-info h1 {
+  font-size: 1.6rem;
+  color: var(--color-accent);
+  margin-bottom: 1rem;
+}
+
+.place-info p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ===========================
+   REVIEWS (place.html)
+=========================== */
+#reviews {
+  margin-bottom: 2rem;
+}
+
+#reviews h2 {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  margin-bottom: 1rem;
+}
+
+.review-card {
+  background-color: var(--color-primary-light);
+  border: 1px solid #ddd;
+  border-radius: var(--radius-card);
+  margin: var(--margin-card);
+  padding: var(--padding-card);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.review-card p {
+  margin: 0.3rem 0;
+  color: var(--color-text);
+}
+
+/* ===========================
+   FORMULAIRE REVIEW
+=========================== */
+.add-review {
+  background-color: var(--color-accent-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.add-review h2 {
+  color: var(--color-accent);
+  margin-bottom: 1.2rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+.form input,
+.form textarea,
+.form select {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+  transition: border-color 0.2s;
+}
+
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form button[type="submit"] {
+  align-self: flex-start;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 0.6rem 1.8rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form button[type="submit"]:hover {
+  background-color: var(--color-accent);
+}
+
+/* ===========================
+   FORMULAIRE LOGIN
+=========================== */
+#login-form {
+  max-width: 420px;
+  margin: 3rem auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#login-form h2 {
+  text-align: center;
+  color: var(--color-accent);
+  font-size: 1.4rem;
+}
+
+#login-form label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+#login-form input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  transition: border-color 0.2s;
+}
+
+#login-form input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+#login-form .login-button {
+  align-self: center;
+  width: 100%;
+  text-align: center;
+  padding: 0.7rem;
+  font-size: 1rem;
+}

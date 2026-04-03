@@ -1,0 +1,427 @@
+# Testing Report — HBnB REST API
+
+**Framework:** Flask-RESTx  
+**Test Tool:** unittest + cURL  
+**Date:** 2026-03-02  
+**Base URL:** `http://localhost:5000/api/v1`
+
+---
+
+## Table of Contents
+
+1. [User Endpoints](#1-user-endpoints)
+2. [Place Endpoints](#2-place-endpoints)
+3. [Review Endpoints](#3-review-endpoints)
+4. [Amenity Endpoints](#4-amenity-endpoints)
+5. [Summary Table](#5-summary-table)
+
+---
+
+## 1. User Endpoints
+
+### POST /api/v1/users/ — Create User
+
+#### ✅ TC-U-01 — Valid user creation
+```bash
+curl -X POST http://localhost:5000/api/v1/users/ \
+  -H "Content-Type: application/json" \
+  -d '{"first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}'
+```
+**Expected:** `201 Created`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-U-02 — Empty first_name and last_name
+```bash
+curl -X POST http://localhost:5000/api/v1/users/ \
+  -H "Content-Type: application/json" \
+  -d '{"first_name": "", "last_name": "", "email": "invalid-email"}'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `first_name is required`, `Invalid email format`
+
+---
+
+#### ❌ TC-U-03 — Invalid email format
+```bash
+curl -X POST http://localhost:5000/api/v1/users/ \
+  -H "Content-Type: application/json" \
+  -d '{"first_name": "Jane", "last_name": "Doe", "email": "not-an-email"}'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-U-04 — Get non-existent user
+```bash
+curl -X GET http://localhost:5000/api/v1/users/non_existing_id
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-U-05 — Update non-existent user
+```bash
+curl -X PUT http://localhost:5000/api/v1/users/non_existing_id \
+  -H "Content-Type: application/json" \
+  -d '{"first_name": "Ghost", "last_name": "User", "email": "ghost@example.com"}'
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+## 2. Place Endpoints
+
+### POST /api/v1/places/ — Create Place
+
+#### ✅ TC-P-01 — Valid place creation
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Nice Apartment",
+    "description": "A lovely place in Paris",
+    "price": 120.0,
+    "latitude": 48.8566,
+    "longitude": 2.3522,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `201 Created`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-P-02 — Empty title
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "",
+    "description": "No title",
+    "price": 50.0,
+    "latitude": 10.0,
+    "longitude": 20.0,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `title is required`
+
+---
+
+#### ❌ TC-P-03 — Negative price
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Bad Price",
+    "description": "Negative price test",
+    "price": -10,
+    "latitude": 10.0,
+    "longitude": 20.0,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `price must be greater than 0`
+
+---
+
+#### ❌ TC-P-04 — Price = 0
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Zero Price",
+    "description": "Free?",
+    "price": 0,
+    "latitude": 10.0,
+    "longitude": 20.0,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-P-05 — Latitude out of range (> 90)
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Bad Lat",
+    "description": "Latitude invalide",
+    "price": 50.0,
+    "latitude": 100.0,
+    "longitude": 20.0,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `latitude must be between -90 and 90`
+
+---
+
+#### ❌ TC-P-06 — Longitude out of range (< -180)
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "Bad Lon",
+    "description": "Longitude invalide",
+    "price": 50.0,
+    "latitude": 10.0,
+    "longitude": -200.0,
+    "owner_id": "valid_owner_id",
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `longitude must be between -180 and 180`
+
+---
+
+#### ❌ TC-P-07 — Missing owner_id
+```bash
+curl -X POST http://localhost:5000/api/v1/places/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "title": "No Owner",
+    "description": "Missing owner",
+    "price": 50.0,
+    "latitude": 10.0,
+    "longitude": 20.0,
+    "amenities": []
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS
+
+---
+
+### GET /api/v1/places/
+
+#### ✅ TC-P-08 — Get all places
+```bash
+curl -X GET http://localhost:5000/api/v1/places/
+```
+**Expected:** `200 OK` + JSON array  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-P-09 — Get non-existent place
+```bash
+curl -X GET http://localhost:5000/api/v1/places/nonexistent_id
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-P-10 — Update non-existent place
+```bash
+curl -X PUT http://localhost:5000/api/v1/places/nonexistent_id \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Updated", "description": "...", "price": 90.0, "latitude": 10.0, "longitude": 20.0}'
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+## 3. Review Endpoints
+
+### POST /api/v1/reviews/ — Create Review
+
+#### ❌ TC-R-01 — Rating out of range (> 5)
+```bash
+curl -X POST http://localhost:5000/api/v1/reviews/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Nice place",
+    "rating": 10,
+    "user_id": "fake_user",
+    "place_id": "fake_place"
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `rating must be between 1 and 5`
+
+---
+
+#### ❌ TC-R-02 — Rating below range (< 1)
+```bash
+curl -X POST http://localhost:5000/api/v1/reviews/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "Terrible",
+    "rating": 0,
+    "user_id": "fake_user",
+    "place_id": "fake_place"
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-R-03 — Empty review text
+```bash
+curl -X POST http://localhost:5000/api/v1/reviews/ \
+  -H "Content-Type: application/json" \
+  -d '{
+    "text": "",
+    "rating": 3,
+    "user_id": "fake_user",
+    "place_id": "fake_place"
+  }'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `text is required`
+
+---
+
+#### ❌ TC-R-04 — Get non-existent review
+```bash
+curl -X GET http://localhost:5000/api/v1/reviews/non_existing_id
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-R-05 — Delete non-existent review
+```bash
+curl -X DELETE http://localhost:5000/api/v1/reviews/non_existing_id
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+## 4. Amenity Endpoints
+
+### POST /api/v1/amenities/ — Create Amenity
+
+#### ✅ TC-A-01 — Valid amenity creation
+```bash
+curl -X POST http://localhost:5000/api/v1/amenities/ \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Wi-Fi"}'
+```
+**Expected:** `201 Created`  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-A-02 — Empty name
+```bash
+curl -X POST http://localhost:5000/api/v1/amenities/ \
+  -H "Content-Type: application/json" \
+  -d '{"name": ""}'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS  
+**Validation triggered:** `name is required`
+
+---
+
+#### ❌ TC-A-03 — Missing name field
+```bash
+curl -X POST http://localhost:5000/api/v1/amenities/ \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+**Expected:** `400 Bad Request`  
+**Result:** ✅ PASS
+
+---
+
+#### ✅ TC-A-04 — Get all amenities
+```bash
+curl -X GET http://localhost:5000/api/v1/amenities/
+```
+**Expected:** `200 OK` + JSON array  
+**Result:** ✅ PASS
+
+---
+
+#### ❌ TC-A-05 — Get non-existent amenity
+```bash
+curl -X GET http://localhost:5000/api/v1/amenities/nonexistent_id
+```
+**Expected:** `404 Not Found`  
+**Result:** ✅ PASS
+
+---
+
+## 5. Summary Table
+
+| Test ID  | Endpoint                        | Method | Scenario                        | Expected | Result  |
+|----------|---------------------------------|--------|---------------------------------|----------|---------|
+| TC-U-01  | /api/v1/users/                  | POST   | Valid user                      | 201      | ✅ PASS |
+| TC-U-02  | /api/v1/users/                  | POST   | Empty name + invalid email      | 400      | ✅ PASS |
+| TC-U-03  | /api/v1/users/                  | POST   | Invalid email format            | 400      | ✅ PASS |
+| TC-U-04  | /api/v1/users/{id}              | GET    | Non-existent user               | 404      | ✅ PASS |
+| TC-U-05  | /api/v1/users/{id}              | PUT    | Non-existent user               | 404      | ✅ PASS |
+| TC-P-01  | /api/v1/places/                 | POST   | Valid place                     | 201      | ✅ PASS |
+| TC-P-02  | /api/v1/places/                 | POST   | Empty title                     | 400      | ✅ PASS |
+| TC-P-03  | /api/v1/places/                 | POST   | Negative price                  | 400      | ✅ PASS |
+| TC-P-04  | /api/v1/places/                 | POST   | Price = 0                       | 400      | ✅ PASS |
+| TC-P-05  | /api/v1/places/                 | POST   | Latitude > 90                   | 400      | ✅ PASS |
+| TC-P-06  | /api/v1/places/                 | POST   | Longitude < -180                | 400      | ✅ PASS |
+| TC-P-07  | /api/v1/places/                 | POST   | Missing owner_id                | 400      | ✅ PASS |
+| TC-P-08  | /api/v1/places/                 | GET    | Get all places                  | 200      | ✅ PASS |
+| TC-P-09  | /api/v1/places/{id}             | GET    | Non-existent place              | 404      | ✅ PASS |
+| TC-P-10  | /api/v1/places/{id}             | PUT    | Non-existent place              | 404      | ✅ PASS |
+| TC-R-01  | /api/v1/reviews/                | POST   | Rating = 10 (> 5)               | 400      | ✅ PASS |
+| TC-R-02  | /api/v1/reviews/                | POST   | Rating = 0 (< 1)                | 400      | ✅ PASS |
+| TC-R-03  | /api/v1/reviews/                | POST   | Empty text                      | 400      | ✅ PASS |
+| TC-R-04  | /api/v1/reviews/{id}            | GET    | Non-existent review             | 404      | ✅ PASS |
+| TC-R-05  | /api/v1/reviews/{id}            | DELETE | Non-existent review             | 404      | ✅ PASS |
+| TC-A-01  | /api/v1/amenities/              | POST   | Valid amenity                   | 201      | ✅ PASS |
+| TC-A-02  | /api/v1/amenities/              | POST   | Empty name                      | 400      | ✅ PASS |
+| TC-A-03  | /api/v1/amenities/              | POST   | Missing name field              | 400      | ✅ PASS |
+| TC-A-04  | /api/v1/amenities/              | GET    | Get all amenities               | 200      | ✅ PASS |
+| TC-A-05  | /api/v1/amenities/{id}          | GET    | Non-existent amenity            | 404      | ✅ PASS |
+
+**Total: 25 tests — 25 ✅ PASS — 0 ❌ FAIL**
+
+---
+
+## Validation Rules Summary
+
+| Entity   | Field       | Rule                                      |
+|----------|-------------|-------------------------------------------|
+| User     | first_name  | Non-vide,                                 |
+| User     | last_name   | Non-vide,                                 |
+| User     | email       | Format valide `x@x.xx`                    |
+| Place    | title       | Non-vide, max 100 chars                   |
+| Place    | price       | Nombre > 0                                |
+| Place    | latitude    | Float entre -90 et 90                     |
+| Place    | longitude   | Float entre -180 et 180                   |
+| Place    | owner_id    | Non-vide                                  |
+| Review   | text        | Non-vide                                  |
+| Review   | rating      | Entier entre 1 et 5                       |
+| Review   | user_id     | Non-vide                                  |
+| Review   | place_id    | Non-vide                                  |
+| Amenity  | name        | Non-vide,                                 |
